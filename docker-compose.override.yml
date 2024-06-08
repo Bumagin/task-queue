@@ -1,0 +1,33 @@
+services:
+  task-queue.worker:
+    build:
+      context: .
+      dockerfile: src/TaskQueue.Worker/TaskQueue.Worker.Presentation/Dockerfile
+  
+  task-queue.client:
+    build:
+      context: .
+      dockerfile: src/TaskQueue.Client/TaskQueue.Client.API/Dockerfile
+    environment:
+      ASPNETCORE_URLS: ${CLIENT_ADDRESS}
+    ports:
+      - "5100:5100"
+  
+  task-queue.db:
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "5444:5432"
+  
+  task-queue.rabbitmq:
+    restart: always
+    hostname: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER:-admin}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS:-qwerty1234}
+      RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS: ${RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS}
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+    ports:
+      - "15600:15672"

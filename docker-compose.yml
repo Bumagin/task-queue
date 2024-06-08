@@ -1,0 +1,14 @@
+services:
+  task-queue.worker:
+    image: task-queue.worker
+
+  task-queue.client:
+    image: task-queue.client
+  
+  task-queue.db:
+    container_name: task-queue.db
+    image: postgres
+  
+  task-queue.rabbitmq:
+    container_name: task-queue.rabbitmq
+    image: rabbitmq
